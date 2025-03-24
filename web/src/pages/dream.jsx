@@ -1,9 +1,26 @@
 import React, { useState } from "react";
 import Layout from "../components/layout";
+import { marked } from "marked";
 
 export default function DreamAnalysisPage() {
   const [dreamText, setDreamText] = useState("");
-
+  const [analysis, setAnalysis] = useState("");
+  const handleAnalyze = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: dreamText }),
+      });
+  
+      const data = await response.json();
+      setAnalysis(data.analysis); 
+    } catch (error) {
+      console.error("Hata oluştu:", error);
+    }
+  };
   return (
     <Layout>
     <div className="flex h-screen bg-gradient-to-br from-indigo-100 to-purple-100">
@@ -21,8 +38,9 @@ export default function DreamAnalysisPage() {
           className="w-full h-60 p-4 rounded border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none resize-none"
         />
 
-        <button className="mt-4 bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-6 rounded shadow transition">
+        <button className="mt-4 bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-6 rounded shadow transition"onClick={handleAnalyze}>
           Rüyayı Analiz Et
+
         </button>
 
         {/* Oyun Önerisi */}
@@ -38,10 +56,17 @@ export default function DreamAnalysisPage() {
       {/* Sağ Panel - Analiz Sonucu + Geçmiş */}
       <div className="w-1/2 p-10 bg-white rounded-l-3xl shadow-inner">
         <h2 className="text-2xl font-bold mb-4">🔍 Analiz Sonucu</h2>
-        <div className="p-4 border rounded bg-gray-50 text-sm text-gray-700 min-h-[120px]">
-          {/* Burada analiz sonucu gösterilecek */}
-          Burada rüya analizi sonucu görünecek.
-        </div>
+        <div
+        className="text-gray-700 space-y-4"
+        dangerouslySetInnerHTML={{
+            __html: marked.parse(
+            analysis
+                .replace(/^\* /gm, '') 
+                .replace(/\*\*/g, '**')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            ),
+        }}
+        ></div>
 
         <h3 className="text-lg font-semibold mt-8 mb-2">🕓 Geçmiş Analizler</h3>
         <div className="space-y-2 max-h-52 overflow-y-auto">
