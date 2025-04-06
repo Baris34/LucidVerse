@@ -11,3 +11,6 @@ venv/
 # React Native & Expo
 node_modules/
 .expo/
+
+firebase_key.json
+firebase_key.base64.txt

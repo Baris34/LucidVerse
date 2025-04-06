@@ -8,7 +8,7 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 model = genai.GenerativeModel('gemini-2.0-flash')
 
 def analyze_dream(text):
-    prompt = f"Aşağıdaki rüyayı Freud'a göre kısaca analiz et: {text}"
+    prompt = f"Aşağıdaki rüyayı Freud'a göre kısaca analiz et ve rüya metnine göre en uygun temayı yukarıdaki listeden yalnızca bir tane olacak şekilde ve sadece şu formatta belirt: Tema: [Tema İsmi] Conflict (Çatışma) Fear (Korku) Freedom (Özgürlük) Loss (Kayıp) Transformation (Dönüşüm) Love (Aşk) Isolation (Yalnızlık) Control (Kontrol) Identity (Kimlik) Adventure (Macera){text}" #Bu kısım düzenlenecek
     response = model.generate_content(prompt)
     markdown_text = response.text
     html_output = markdown(markdown_text)
