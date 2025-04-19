@@ -7,7 +7,7 @@ export default function Layout({ children }) {
       {/* Sidebar */}
       <div className="w-64 bg-white p-6 shadow-md flex flex-col gap-4">
         <h1 className="text-indigo-600 font-bold text-xl mb-4">LucidVerse</h1>
-        <Link to="/" className="hover:text-indigo-500">🏠 Ana Sayfa</Link>
+        <Link to="/home" className="hover:text-indigo-500">🏠 Ana Sayfa</Link>
         <Link to="/dream" className="hover:text-indigo-500">🌙 Rüya Analizi</Link>
         <Link to="/story" className="hover:text-indigo-500">📖 Hikayeler</Link>
         <Link to="/game" className="hover:text-indigo-500">🎮 Oyunlar</Link>
