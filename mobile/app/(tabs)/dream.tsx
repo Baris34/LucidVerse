@@ -1,23 +1,40 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
-import { useState } from 'react';
-import RenderHtml from 'react-native-render-html';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ScrollView, Alert,FlatList } from 'react-native';
+import { useState,useCallback } from 'react';
 import { useWindowDimensions } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { router } from 'expo-router';
 
 export default function DreamScreen() {
   const { width } = useWindowDimensions();
   const [dreamText, setDreamText] = useState('');
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [recommendedGame, setRecommendedGame] = useState<string | null>(null);
+  const [dreams, setDreams] = useState<any[]>([]);
 
+  useFocusEffect(
+    useCallback(() => {
+      const fetchDreams = async () => {
+        try {
+          const res = await fetch('http://10.0.2.2:5000/dreams');
+          const data = await res.json();
+          setDreams(data.slice(0, 5));
+        } catch (err) {
+          console.error('Rüya analizleri çekilemedi:', err);
+        }
+      };
+      fetchDreams();
+    }, [])
+  );
   
   const htmlStyles = StyleSheet.create({
+    
     p: {
       marginBottom: 10,
       fontSize: 14,
       color: '#333',
     },
     strong: {
-      fontWeight: '700', // string değil, literal olarak "700"
+      fontWeight: '700',
       color: '#222',
     },
     ul: {
@@ -54,7 +71,21 @@ export default function DreamScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <FlatList
+      data={dreams}
+      keyExtractor={(item) => item.id}
+      contentContainerStyle={styles.listContainer}
+      renderItem={({ item }) => (
+    <TouchableOpacity
+      style={styles.dreamBox}
+      onPress={() => router.push(`../dream/${item.id}`)}
+    >
+      <Text style={styles.dreamTitle}>{item.title}</Text>
+      <Text style={styles.themeText}>Tema: {item.theme}</Text>
+    </TouchableOpacity>
+  )}
+  ListHeaderComponent={
+    <View>
       <Text style={styles.header}>🌙 Rüya Analizi</Text>
       <Text style={styles.desc}>Rüyanı yaz, analiz edelim ve sana özel bir oyun önerelim!</Text>
 
@@ -73,20 +104,17 @@ export default function DreamScreen() {
       </TouchableOpacity>
 
       {/* Analiz Sonucu */}
-      {analysis !== '' && (
-  <>
-    <Text style={styles.sectionTitle}>🔍 Analiz Sonucu</Text>
-    <View style={styles.analysisContainer}>
-    <RenderHtml
-      contentWidth={width}
-      source={{ html: analysis ?? '' }}
-      tagsStyles={htmlStyles}
-    />
-    </View>
-  </>
-)}
+      {analysis && (
+        <>
+          <Text style={styles.sectionTitle}>🔍 Analiz Sonucu</Text>
+          <View style={styles.analysisContainer}>
+          <Text style={styles.analysisText}>{analysis}</Text>
 
-      {/* Önerilen Oyun */}
+          </View>
+        </>
+      )}
+
+      {/* Oyun Önerisi */}
       {recommendedGame && (
         <>
           <Text style={styles.sectionTitle}>🎮 Oyun Önerisi</Text>
@@ -100,11 +128,26 @@ export default function DreamScreen() {
           </TouchableOpacity>
         </>
       )}
-    </ScrollView>
-  );
+
+      <Text style={styles.oldHeader}>🕓 Eski Rüya Analizleri</Text>
+    </View>
+  }
+/>
+  )
 }
 
 const styles = StyleSheet.create({
+  dreamBox: {
+    backgroundColor: '#e8e8ff',
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
   container: { padding: 20, backgroundColor: '#fff', flexGrow: 1 },
   header: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginTop: 20 },
   desc: { fontSize: 14, color: '#999', textAlign: 'center', marginBottom: 20 },
@@ -148,5 +191,27 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 12,
     marginBottom: 20,
-  }
+  },
+  listContainer: {
+    padding: 20,
+    paddingBottom: 40,
+  },
+  oldHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  dreamTitle: { 
+    fontSize: 16, 
+    fontWeight: 'bold', 
+    color: '#333', 
+    marginBottom: 4 
+  },
+  
+  themeText: {
+    fontSize: 12,    
+    color: '#666',
+    marginTop: 4,
+  },
+  analysisText: { fontSize: 14, color: '#333', marginBottom: 6 },
 });

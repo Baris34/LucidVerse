@@ -1,10 +1,20 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Layout from "../components/layout";
 import { marked } from "marked";
 
 export default function DreamAnalysisPage() {
   const [dreamText, setDreamText] = useState("");
   const [analysis, setAnalysis] = useState("");
+  const [dreams, setDreams] = useState([]);
+
+
+  useEffect(() => {
+    fetch("http://localhost:5000/dreams")
+      .then((res) => res.json())
+      .then((data) => setDreams(data.slice(0, 5)))
+      .catch((err) => console.error("Hikayeler alınamadı", err));
+  }, []);
+
   const handleAnalyze = async () => {
     try {
       const response = await fetch("http://localhost:5000/analyze", {
@@ -69,16 +79,18 @@ export default function DreamAnalysisPage() {
         ></div>
 
         <h3 className="text-lg font-semibold mt-8 mb-2">🕓 Geçmiş Analizler</h3>
-        <div className="space-y-2 max-h-52 overflow-y-auto">
-          {/* Dummy geçmiş analiz */}
-          <div className="p-3 bg-gray-100 rounded">
-            <p className="text-sm text-gray-700">“Gökten düşüyordum ve birden uyanmıştım.”</p>
-            <span className="text-xs text-gray-500">→ Tema: Kontrol Kaybı</span>
-          </div>
-          <div className="p-3 bg-gray-100 rounded">
-            <p className="text-sm text-gray-700">“Denizde yüzüyordum, her şey huzurluydu.”</p>
-            <span className="text-xs text-gray-500">→ Tema: Rahatlama</span>
-          </div>
+        
+          <div className="space-y-4">
+          {dreams.map((dream) => (
+            <div
+              key={dream.id}
+              className="bg-gray-100 p-5 rounded-xl shadow-sm hover:bg-gray-200 hover:shadow-md transition cursor-pointer"
+              onClick={() => (window.location.href = `/dream/${dream.id}`)}
+            >
+              <h3 className="font-bold text-gray-800">{dream.title}</h3>
+              <p className="text-sm text-gray-600 mt-1">Ana Tema: {dream.theme}</p>
+            </div>
+          ))}
           {/* Daha fazlası buraya eklenebilir */}
         </div>
       </div>

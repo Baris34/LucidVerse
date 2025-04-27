@@ -6,6 +6,7 @@ import Story from "./pages/story";
 import StoryDetail from "./pages/story/[id]";
 import Profile from "./pages/profile";
 import Auth from "./pages/auth";
+import DreamDetail from "./pages/dream/[id]";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Auth />} />
         <Route path="/home" element={<Home />} />
         <Route path="/dream" element={<Dream />} />
+        <Route path="/dream/:id" element={<DreamDetail />} />
         <Route path="/story" element={<Story />} />
         <Route path="/story/:id" element={<StoryDetail />} />
         <Route path="/game" element={<Game />} />
