@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity
 import { useLocalSearchParams, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import BASE_URL from '../../constants/api';
+
 export default function DreamDetailScreen() {
   const { id } = useLocalSearchParams();
   const [dream, setDream] = useState<any>(null);
@@ -10,7 +12,7 @@ export default function DreamDetailScreen() {
   useEffect(() => {
     const fetchDreamDetail = async () => {
       try {
-        const res = await fetch(`http://10.0.2.2:5000/dream/${id}`);
+        const res = await fetch(`${BASE_URL}/dream/${id}`);
         const data = await res.json();
         setDream(data);
       } catch (err) {

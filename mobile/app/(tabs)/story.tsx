@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'r
 import { useEffect, useState, useCallback } from 'react';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
+import BASE_URL from '../../constants/api';
 
 export default function StoryScreen() {
   const [input, setInput] = useState('');
@@ -12,7 +13,7 @@ export default function StoryScreen() {
     useCallback(() => {
       const fetchStories = async () => {
         try {
-          const res = await fetch("http://10.0.2.2:5000/stories");
+          const res = await fetch(`${BASE_URL}/stories`);
           const data = await res.json();
           setStories(data.slice(0, 5));
         } catch (err) {
@@ -29,7 +30,7 @@ export default function StoryScreen() {
     if (!input.trim()) return;
 
     try {
-      const response = await fetch("http://10.0.2.2:5000/generate-story", {
+      const response = await fetch(`${BASE_URL}/generate-story`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: input }),

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
+import BASE_URL from '../../constants/api';
 
 export default function StoryDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -11,7 +12,7 @@ export default function StoryDetailScreen() {
   useEffect(() => {
     const fetchStory = async () => {
       try {
-        const response = await fetch(`http://10.0.2.2:5000/story/${id}`);
+        const response = await fetch(`${BASE_URL}/story/${id}`);
         const data = await response.json();
         setStory(data);
       } catch (err) {

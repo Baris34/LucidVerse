@@ -3,19 +3,19 @@ import { useState,useCallback } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
-
+import BASE_URL from '../../constants/api';
 export default function DreamScreen() {
   const { width } = useWindowDimensions();
   const [dreamText, setDreamText] = useState('');
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [recommendedGame, setRecommendedGame] = useState<string | null>(null);
   const [dreams, setDreams] = useState<any[]>([]);
-
+  
   useFocusEffect(
     useCallback(() => {
       const fetchDreams = async () => {
         try {
-          const res = await fetch('http://10.0.2.2:5000/dreams');
+          const res = await fetch(`${BASE_URL}/dreams`);
           const data = await res.json();
           setDreams(data.slice(0, 5));
         } catch (err) {
@@ -53,7 +53,7 @@ export default function DreamScreen() {
     }
 
     try {
-      const response = await fetch('http://10.0.2.2:5000/analyze', {
+      const response = await fetch(`${BASE_URL}/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
