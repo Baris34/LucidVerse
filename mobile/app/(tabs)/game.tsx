@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { NativeModules } from 'react-native';
 
 const categories = [
   { id: 'all', label: 'All', icon: 'apps' as const },
@@ -62,7 +63,17 @@ export default function GameScreen() {
       {/* Game Cards Grid */}
       <View style={styles.grid}>
         {filteredGames.map((game) => (
-          <TouchableOpacity key={game.id} style={styles.gameCard}>
+          <TouchableOpacity
+          key={game.id}
+          style={styles.gameCard}
+          onPress={() => {
+            if (game.name === 'Dream Runner') {
+              NativeModules.UnityModule.openUnity();
+            } else {
+              console.log(`Opening: ${game.name}`);
+            }
+          }}
+        >
             <Image source={game.image} style={styles.gameImage} />
             <Text style={styles.gameName}>{game.name}</Text>
           </TouchableOpacity>

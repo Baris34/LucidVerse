@@ -72,7 +72,14 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Gold"))
+        {
+            Destroy(other.gameObject);
+            GameManager.instance.AddGold(1);
+        }
+    }
     private void OnAnimatorMove()
     {
         if (cc.isGrounded)
@@ -100,6 +107,8 @@ public class PlayerController : MonoBehaviour
     public void SwipeUp()
     {
         animator.SetTrigger("Jumping");
+        cc.height = 1.3f;
+        cc.center = new Vector3(0,3.3f,0);
     }
 
     public void SwipeDown()
@@ -112,5 +121,9 @@ public class PlayerController : MonoBehaviour
     {
         cc.center = new Vector3(0, 1.86f, 0);
         cc.height = 3.39f;
+    }
+    public void JumpAnimationEnd(){
+        cc.center = new Vector3(0, 1.86f, 0);
+        cc.height = 3.39f;   
     }
 }

@@ -18,6 +18,8 @@ firebase_key.base64.txt
 # ======================
 # Unity
 # ======================
+**/google-services.json
+**/google-services-desktop.json
 
 # Unity generated folders
 [Ll]ibrary/
@@ -75,6 +77,13 @@ Packages/packages-lock.json
 .idea/
 *.code-workspace
 *.sln.iml
+
+# Firebase SDK (örnek)
+**/FirebaseCppApp-*.bundle
+**/firebase_unity*.dll
+**/*.jar
+**/*.aar
+**/Plugins/**/*.so
 
 # Plastic SCM (if used)
 .plastic/
