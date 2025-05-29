@@ -14,6 +14,18 @@ public class PlayerController : MonoBehaviour
     {
        cc.Move(destination);
        destination = Vector3.zero;
+
+        #if UNITY_EDITOR || UNITY_WEBGL
+        if (Input.GetMouseButtonDown(0))
+        {
+            startPosition = Input.mousePosition;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            endPosition = Input.mousePosition;
+            DetectSwipe();
+        }
+        #endif
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);

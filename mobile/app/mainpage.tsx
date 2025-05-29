@@ -1,107 +1,166 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { Link } from 'expo-router';
+import React from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, StatusBar, Platform } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context'; 
+
+const logoImage = require('../assets/logo.png');
+const illustrationImage = require('../assets/Group.png');
 
 export default function WelcomeScreen() {
+  const router = useRouter();
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.logoContainer}>
-        <Image
-          source={require('../assets/logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <Text style={styles.brandName}>
-          <Text style={{ fontWeight: 'bold' }}>Lucid</Text> <Text>Verse</Text>
-        </Text>
-      </View>
+    <View style={styles.fullScreen}>
+      <StatusBar barStyle="light-content" translucent={true} backgroundColor="transparent" />
+      <LinearGradient
+        colors={['#2C3E50', '#1A2980', '#23074d']}
+        style={styles.gradientBackground}
+      >
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.contentContainer}>
+            {/* Logo Alanı */}
+            <View style={styles.logoContainer}>
+              <Image source={logoImage} style={styles.logo} />
+              <Text style={styles.appName}>LucidVerse</Text>
+            </View>
 
-      <Image
-        source={require('../assets/Group.png')}
-        style={styles.image}
-        resizeMode="contain"
-      />
+            {/* İllüstrasyon Alanı */}
+            <View style={styles.illustrationContainer}>
+              <Image
+                source={illustrationImage}
+                style={styles.illustration}
+                resizeMode="contain"
+              />
+            </View>
 
-      <View style={styles.textContainer}>
-        <Text style={styles.title}>We are what we do</Text>
-        <Text style={styles.subtitle}>
-          Thousand of people are using silent moon for smalls meditation
-        </Text>
-      </View>
-      <Link href="/Signup/page" asChild>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>SIGN UP</Text>
-      </TouchableOpacity>
-      </Link>
-      <Text style={styles.footerText}>
-        ALREADY HAVE AN ACCOUNT?{' '} Login
-      </Text>
-    </ScrollView>
+            {/* Metin Alanı */}
+            <View style={styles.textContainer}>
+              <Text style={styles.title}>Rüyalarının Derinliklerine Yolculuk</Text>
+              <Text style={styles.subtitle}>
+                Gördüğün rüyaları anlamlandır, eşsiz hikayelere dönüştür ve rüya temalı oyunları keşfet.
+              </Text>
+            </View>
+
+            {/* Butonlar Alanı */}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={() => router.push('../Signup/page')}
+              >
+                <Text style={styles.primaryButtonText}>Hemen Başla (Kayıt Ol)</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.secondaryButton}
+                onPress={() => router.push('../Login/login')}
+              >
+                <Text style={styles.secondaryButtonText}>Zaten Bir Hesabın Var mı? Giriş Yap</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </SafeAreaView>
+      </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 24,
-    backgroundColor: '#fff',
-    flexGrow: 1,
+  fullScreen: {
+    flex: 1,
+  },
+  gradientBackground: {
+    flex: 1,
+  },
+  safeArea: {
+    flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 30,
+    paddingTop: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight || 20 + 20,
+    paddingBottom: 30,
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: 40,
   },
   logo: {
-    height: 50,
-    width: 50,
+    width: 70,
+    height: 70,
+    borderRadius: 12,
+    marginBottom: 8,
   },
-  brandName: {
-    fontSize: 20,
-    marginTop: 8,
+  appName: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
   },
-  image: {
-    height: 250,
-    width: '100%',
-    marginTop: 20,
+  illustrationContainer: { 
+    flex: 1, 
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%', 
+  },
+  illustration: {
+    width: '95%',
+    maxWidth: 350,
+    aspectRatio: 1,
   },
   textContainer: {
     alignItems: 'center',
-    marginVertical: 24,
   },
   title: {
-    fontSize: 24,
+    fontSize: 24, 
     fontWeight: 'bold',
-    color: '#252525',
+    color: '#FFFFFF',
     textAlign: 'center',
+    marginBottom: 12,
+    lineHeight: 32,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#aaa',
-    marginTop: 10,
+    fontSize: 15,
+    color: '#E0E0E0',
     textAlign: 'center',
+    lineHeight: 22,
     paddingHorizontal: 10,
   },
-  button: {
-    backgroundColor: '#9D84F7',
-    paddingVertical: 16,
-    paddingHorizontal: 50,
-    borderRadius: 30,
-    marginTop: 20,
+  buttonContainer: { 
     width: '100%',
     alignItems: 'center',
+    paddingTop: 20,
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+  primaryButton: {
+    backgroundColor: '#FFD700',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 30,
+    width: '95%',
+    maxWidth: 350,
+    alignItems: 'center',
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+    marginBottom: 15,
+  },
+  primaryButtonText: {
+    color: '#1A237E',
+    fontWeight: 'bold',
     fontSize: 16,
   },
-  footerText: {
-    marginTop: 20,
-    fontSize: 12,
-    color: '#999',
+  secondaryButton: {
+    paddingVertical: 10,
+    width: '95%',
+    maxWidth: 350,
+    alignItems: 'center',
   },
-  loginLink: {
-    color: '#9D84F7',
-    fontWeight: 'bold',
+  secondaryButtonText: {
+    color: '#B0BEC5',
+    fontSize: 14,
+    fontWeight: '500',
   },
 });

@@ -15,9 +15,7 @@ Aşağıdaki rüya için:
 - En son, sadece şu formatta bir tema belirt: Tema: [Tema İsmi]
 
 Tema listesi:
-Conflict (Çatışma), Fear (Korku), Freedom (Özgürlük), Loss (Kayıp),
-Transformation (Dönüşüm), Love (Aşk), Isolation (Yalnızlık),
-Control (Kontrol), Identity (Kimlik), Adventure (Macera)
+Fear, Love
 
 Rüya: {text}
 """

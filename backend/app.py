@@ -4,10 +4,87 @@ from flask_cors import CORS
 from dream_analysis import analyze_dream
 from firebase_config import db
 from story_generator import generate_story
+from werkzeug.security import generate_password_hash, check_password_hash
 import re
 
 app = Flask(__name__)
 CORS(app) 
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+    if not data or not data.get('email') or not data.get('password') or not data.get('username'):
+        return jsonify({"error": "Missing email, password, or username"}), 400
+
+    email = data.get('email')
+    password = data.get('password')
+    username = data.get('username')
+
+    users_ref = db.collection('users')
+    query = users_ref.where('email', '==', email).limit(1).stream()
+    existing_user = [doc for doc in query]
+
+    if existing_user:
+        return jsonify({"error": "Bu e-posta adresi zaten kayıtlı."}), 409
+
+    query_username = users_ref.where('username', '==', username).limit(1).stream()
+    existing_username = [doc for doc in query_username]
+    if existing_username:
+        return jsonify({"error": "Bu kullanıcı adı zaten alınmış."}), 409
+
+    hashed_password = generate_password_hash(password)
+
+    try:
+        user_data = {
+            'username': username,
+            'email': email,
+            'password_hash': hashed_password,
+            'created_at': datetime.utcnow().isoformat()
+        }
+        user_ref = users_ref.document()
+        user_ref.set(user_data)
+
+        return jsonify({
+            "message": "Kullanıcı başarıyla oluşturuldu.",
+            "userId": user_ref.id,
+            "username": username,
+            "email": email
+        }), 201
+    except Exception as e:
+        return jsonify({"error": "Kullanıcı oluşturulurken bir hata oluştu: " + str(e)}), 500
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    if not data or not data.get('email') or not data.get('password'):
+        return jsonify({"error": "Missing email or password"}), 400
+
+    email = data.get('email')
+    password = data.get('password')
+
+    users_ref = db.collection('users')
+    query = users_ref.where('email', '==', email).limit(1).stream()
+    
+    user_doc = None
+    for doc in query:
+        user_doc = doc
+        break
+
+    if not user_doc:
+        return jsonify({"error": "Geçersiz e-posta veya şifre."}), 401
+
+    user_data = user_doc.to_dict()
+    
+    if not user_data.get('password_hash') or not check_password_hash(user_data['password_hash'], password):
+        return jsonify({"error": "Geçersiz e-posta veya şifre."}), 401
+
+    return jsonify({
+        "message": "Giriş başarılı.",
+        "userId": user_doc.id,
+        "username": user_data.get('username'),
+        "email": user_data.get('email')
+    }), 200
 
 @app.route('/')
 def home():

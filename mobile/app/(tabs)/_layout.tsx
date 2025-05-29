@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { Image } from 'react-native';
+
 export default function Layout() {
     return (
       <Tabs screenOptions={{ headerShown: false }}>
